@@ -1,7 +1,9 @@
 package pro.sky.java.lesson19.webemployeestream19.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import pro.sky.java.lesson19.webemployeestream19.exceptions.EmployeeIsAlreadyInsideListException;
+import pro.sky.java.lesson19.webemployeestream19.exceptions.InPutDataIsNotCorrectException;
 import pro.sky.java.lesson19.webemployeestream19.exceptions.NumberDepartmentIsNotCorrectException;
 
 import java.util.ArrayList;
@@ -17,7 +19,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee addEmployee(String firstName, String lastName, int salary, int department) {
-        Employee addingEmployee = new Employee(firstName, lastName, salary, department);
+        if (!StringUtils.isAlpha(firstName) || !StringUtils.isAlpha(lastName)) {
+            throw new InPutDataIsNotCorrectException("Check firstname and lastname!");
+        }
+        String capFirstName = StringUtils.capitalize(firstName);
+        String capLastName = StringUtils.capitalize(lastName);
+        Employee addingEmployee = new Employee(capFirstName, capLastName, salary, department);
         if (employeeList.contains(addingEmployee)) {
             throw new EmployeeIsAlreadyInsideListException("Employee is already inside list");
         }
@@ -133,8 +140,5 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!nums.contains(numberDepartment)) {
             throw new NumberDepartmentIsNotCorrectException("Number of department is not correct");
         }
-
     }
-
-
 }
